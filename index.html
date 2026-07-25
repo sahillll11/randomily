@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NexusRandom - Meet & Chat</title>
+  
+  <link rel="stylesheet" href="style.css">
+  
+  <!-- Socket.io -->
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="navbar">
+    <h2>🌐 NexusRandom</h2>
+    <div class="online-tag">Online: <span id="user-count">1</span></div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="app-container">
+
+    <!-- Left Side: Video Section -->
+    <section class="video-section">
+      
+      <!-- Video Grid Wrapper (CSS Layout ke liye) -->
+      <div class="video-grid">
+        <!-- Stranger Video -->
+        <div class="video-card">
+          <video id="remote-video" autoplay playsinline></video>
+          <span class="video-label">Stranger</span>
+        </div>
+
+        <!-- Your Video (Local Camera) -->
+        <div class="video-card">
+          <video id="local-video" autoplay playsinline muted></video>
+          <span class="video-label">You</span>
+        </div>
+      </div>
+
+      <!-- Action Controls -->
+      <div class="controls">
+        <button id="start-btn" class="btn primary">Start Search</button>
+        <button id="next-btn" class="btn danger" disabled>Skip / Next ⏭️</button>
+      </div>
+
+    </section>
+
+    <!-- Right Side: Chat System -->
+    <section class="chat-section">
+      <div class="chat-header">
+        <h3>Live Chat</h3>
+      </div>
+      <div id="chat-messages" class="chat-box">
+        <p class="system-msg">Press "Start Search" to find a stranger!</p>
+      </div>
+      <form id="chat-form" class="chat-input-area">
+        <input type="text" id="msg-input" placeholder="Type a message..." disabled required>
+        <button type="submit" id="send-btn" class="btn" disabled>Send</button>
+      </form>
+    </section>
+
+  </main>
+
+  <!-- Custom Script Load (Body ke end mein ek hi baar) -->
+  <script src="script.js"></script>
+</body>
+</html>
