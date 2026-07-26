@@ -49,7 +49,7 @@ body {
 .video-box {
   position: relative;
   width: 100%;
-  height: 100%;
+  height: 80%;
   background: #000;
   border-radius: 8px;
   overflow: hidden;
@@ -60,7 +60,7 @@ body {
 
 video {
   width: 100%;
-  height: 100%;
+  height: 80%;
   object-fit: cover; /* Aspect ratio screen ke according maintain rakhta hai */
 }
 
