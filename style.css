@@ -1,179 +1,192 @@
-/* Reset & Base Styles */
 * {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
-body {
-  background-color: #0f172a;
-  color: #f8fafc;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+:root {
+  --bg-main: #0f1117;
+  --bg-card: #1a1d26;
+  --accent-blue: #0084ff;
+  --accent-green: #00c853;
+  --accent-red: #ff3b30;
+  --text-main: #f0f2f5;
+  --text-sub: #8a8f9d;
+  --border-color: rgba(255, 255, 255, 0.08);
 }
 
-/* App Container */
-.app-container {
+body {
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  height: 100vh;
   display: flex;
   flex-direction: column;
-  height: 100vh;
-  max-width: 1400px;
+  overflow: hidden;
+}
+
+header {
+  height: 60px;
+  background: var(--bg-card);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.logo {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--accent-blue);
+}
+
+.status {
+  font-size: 0.85rem;
+  color: var(--text-sub);
+  background: rgba(255, 255, 255, 0.05);
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid var(--border-color);
+}
+
+/* App Layout - Balanced 380px Chat Panel */
+.app-container {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 16px;
+  padding: 16px;
+  height: calc(100vh - 60px);
+  max-width: 1600px;
   margin: 0 auto;
   width: 100%;
-  padding: 10px;
-  gap: 10px;
 }
 
-/* Video Section Layout */
-.main-content {
+.video-section {
   display: flex;
-  flex: 1;
-  gap: 10px;
-  min-height: 0; /* Prevents overflow in flex children */
+  flex-direction: column;
+  gap: 12px;
+  height: 100%;
+  min-height: 0;
 }
 
-/* Video Grid - Desktop Default */
+/* Reduced Video Size Box */
 .video-grid {
-  flex: 2;
+  flex: 1;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  background: #1e293b;
-  padding: 10px;
-  border-radius: 12px;
-  position: relative;
+  gap: 12px;
+  min-height: 0;
 }
 
 .video-box {
-  position: relative;
-  width: 100%;
-  height: 80%;
   background: #000;
-  border-radius: 8px;
+  border-radius: 16px;
+  position: relative;
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
+  border: 1px solid var(--border-color);
+  aspect-ratio: 16 / 10;
+  max-height: 100%;
 }
 
-video {
+.video-box video {
   width: 100%;
-  height: 80%;
-  object-fit: cover; /* Aspect ratio screen ke according maintain rakhta hai */
+  height: 100%;
+  object-fit: cover;
 }
 
 .video-label {
   position: absolute;
-  bottom: 10px;
-  left: 10px;
+  top: 12px;
+  left: 12px;
   background: rgba(0, 0, 0, 0.6);
-  padding: 4px 10px;
-  border-radius: 4px;
-  font-size: 12px;
-  font-weight: 600;
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(8px);
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  z-index: 2;
 }
 
+/* Controls */
+.controls {
+  height: 68px;
+  background: var(--bg-card);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 0 20px;
+  border: 1px solid var(--border-color);
+}
+
+.btn {
+  padding: 12px 28px;
+  border: none;
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+}
+
+.btn-start { background: var(--accent-green); color: #000; }
+.btn-next { background: var(--accent-blue); color: #fff; }
+.btn-stop { background: rgba(255, 59, 48, 0.15); color: var(--accent-red); border: 1px solid rgba(255, 59, 48, 0.3); }
+
 /* Chat Section */
-.chat-container {
-  flex: 1;
+.side-panel {
+  background: var(--bg-card);
+  border-radius: 16px;
   display: flex;
   flex-direction: column;
-  background: #1e293b;
-  border-radius: 12px;
   overflow: hidden;
+  border: 1px solid var(--border-color);
+  height: 100%;
 }
 
 .chat-messages {
   flex: 1;
-  padding: 12px;
+  padding: 16px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 }
 
-/* Chat Input Bar */
-.chat-form {
+.system-msg {
+  color: var(--text-sub);
+  font-size: 0.85rem;
+  font-style: italic;
+}
+
+.chat-input-area {
+  padding: 12px;
+  border-top: 1px solid var(--border-color);
   display: flex;
-  padding: 10px;
-  background: #0f172a;
   gap: 8px;
 }
 
-.chat-form input {
+.chat-input-area input {
   flex: 1;
-  padding: 10px;
-  border-radius: 6px;
-  border: 1px solid #334155;
-  background: #1e293b;
-  color: white;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-main);
+  color: #fff;
   outline: none;
 }
 
-/* Action Controls (Buttons) */
-.controls {
-  display: flex;
-  gap: 10px;
-  padding: 5px 0;
+@media (max-width: 900px) {
+  .app-container { grid-template-columns: 1fr; }
+  .side-panel { display: none; }
 }
 
-button {
-  flex: 1;
-  padding: 12px;
-  border: none;
-  border-radius: 8px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-#start-btn { background: #22c55e; color: white; }
-#next-btn { background: #ef4444; color: white; }
-button:disabled { opacity: 0.5; cursor: not-allowed; }
-
-/* ==========================================
-   📱 MOBILE & TABLET RESPONSIVE STYLES
-   ========================================== */
-
-/* Tablet View (Stacked Layout) */
-@media (max-width: 768px) {
-  .main-content {
-    flex-direction: column;
-  }
-
-  .video-grid {
-    flex: 1.5;
-    grid-template-columns: 1fr; /* Single column on mobile/tablets */
-    grid-template-rows: 1fr 1fr;
-  }
-
-  .chat-container {
-    flex: 1;
-    min-height: 200px;
-  }
-}
-
-/* Mobile Screens (Picture-in-Picture layout style option) */
-@media (max-width: 480px) {
-  .app-container {
-    padding: 5px;
-    gap: 5px;
-  }
-
-  .video-grid {
-    padding: 5px;
-    gap: 5px;
-  }
-
-  .video-label {
-    font-size: 10px;
-    padding: 2px 6px;
-  }
-
-  .chat-form input {
-    font-size: 14px; /* Prevents auto-zoom on iOS safari */
-  }
+@media (max-width: 600px) {
+  .video-grid { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; }
 }

@@ -4,74 +4,64 @@ const { Server } = require('socket.io');
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server, {
-  cors: { origin: "*" }
-});
+const io = new Server(server, { cors: { origin: "*" } });
 
-// HTML/CSS/JS static files serve karne ke liye
-app.use(express.static(__dirname));
+app.use(express.static('public')); // serves your HTML/CSS/JS
 
-let waitingUser = null; // Partner wait queue
+let waitingQueue = [];
 
 io.on('connection', (socket) => {
-  console.log('User Connected:', socket.id);
-
-  // 1. Random Matching Logic
-  socket.on('find-partner', () => {
-    // Prevent matching with self or if user is already waiting
-    if (waitingUser && waitingUser.id === socket.id) return;
-
-    if (waitingUser) {
-      // Room ID banao dono ke liye
-      const roomId = `room-${waitingUser.id}-${socket.id}`;
-
-      socket.join(roomId);
-      waitingUser.join(roomId);
-
-      // WebRTC connection initiate karne ke liye batayein
-      // (Pehle user ko initiator banate hain)
-      waitingUser.emit('matched', { roomId, isInitiator: true });
-      socket.emit('matched', { roomId, isInitiator: false });
-
-      console.log(`Matched ${socket.id} with ${waitingUser.id} in ${roomId}`);
-      waitingUser = null; // Waiting queue reset
-    } else {
-      waitingUser = socket;
-      socket.emit('waiting', 'Searching for a stranger...');
-    }
+  socket.on('skip_and_find_next', () => {
+    handleDisconnectOrSkip(socket);
+    findMatch(socket);
   });
 
-  // 2. WebRTC Signaling (Video stream peer-to-peer connect karne ke liye)
-  socket.on('signal', ({ roomId, signalData }) => {
-    socket.to(roomId).emit('signal', signalData);
-  });
-
-  // 3. Real-time Chat Messages Forward Karna
-  socket.on('send-message', ({ roomId, message }) => {
-    socket.to(roomId).emit('receive-message', message);
-  });
-
-  // 4. Leave / Skip Partner Logic
-  socket.on('leave-room', ({ roomId }) => {
-    socket.to(roomId).emit('partner-disconnected');
-    socket.leave(roomId);
-  });
-
-  // 5. Disconnect logic
   socket.on('disconnect', () => {
-    console.log('User Disconnected:', socket.id);
-    
-    // Agar waiting user disconnect ho jaye
-    if (waitingUser && waitingUser.id === socket.id) {
-      waitingUser = null;
-    }
+    handleDisconnectOrSkip(socket);
+  });
 
-    // Inform rooms about disconnect
-    socket.broadcast.emit('partner-disconnected');
+  socket.on('send_offer', ({ roomId, offer }) => {
+    socket.to(roomId).emit('receive_offer', { offer, roomId });
+  });
+
+  socket.on('send_answer', ({ roomId, answer }) => {
+    socket.to(roomId).emit('receive_answer', { answer });
+  });
+
+  socket.on('ice_candidate', ({ roomId, candidate }) => {
+    socket.to(roomId).emit('receive_candidate', { candidate });
   });
 });
 
-const PORT = 3000;
-server.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
-});
+function handleDisconnectOrSkip(socket) {
+  waitingQueue = waitingQueue.filter(id => id !== socket.id);
+  if (socket.currentRoom) {
+    socket.to(socket.currentRoom).emit('partner_left');
+    socket.leave(socket.currentRoom);
+    socket.currentRoom = null;
+  }
+}
+
+function findMatch(socket) {
+  if (waitingQueue.length > 0) {
+    const partnerId = waitingQueue.shift();
+    const partnerSocket = io.sockets.sockets.get(partnerId);
+
+    if (partnerSocket) {
+      const roomId = `room_${socket.id}_${partnerId}`;
+      socket.join(roomId);
+      partnerSocket.join(roomId);
+
+      socket.currentRoom = roomId;
+      partnerSocket.currentRoom = roomId;
+
+      socket.emit('match_found', { roomId, isInitiator: true });
+      partnerSocket.emit('match_found', { roomId, isInitiator: false });
+      return;
+    }
+  }
+  waitingQueue.push(socket.id);
+}
+
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, () => console.log(`Server live on port ${PORT}`));

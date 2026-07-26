@@ -1,69 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>NexusRandom - Meet & Chat</title>
-  
-  <link rel="stylesheet" href="style.css">
-  
-  <!-- Socket.io -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OmeTV Clone</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- Socket.io Library -->
   <script src="/socket.io/socket.io.js"></script>
 </head>
 <body>
 
-  <!-- Header -->
-  <header class="navbar">
-    <h2>🌐 NexusRandom</h2>
-    <div class="online-tag">Online: <span id="user-count">1</span></div>
+  <header>
+    <div class="logo">OmeTV Clone</div>
+    <div class="status">Online: <b id="onlineCount">1</b></div>
   </header>
 
-  <!-- Main Container -->
-  <main class="app-container">
-
-    <!-- Left Side: Video Section -->
-    <section class="video-section">
-      
-      <!-- Video Grid Wrapper (CSS Layout ke liye) -->
+  <div class="app-container">
+    <!-- Left Section: Videos + Controls -->
+    <div class="video-section">
       <div class="video-grid">
         <!-- Stranger Video -->
-        <div class="video-card">
-          <video id="remote-video" autoplay playsinline></video>
+        <div class="video-box">
           <span class="video-label">Stranger</span>
+          <video id="remoteVideo" autoplay playsinline></video>
         </div>
-
-        <!-- Your Video (Local Camera) -->
-        <div class="video-card">
-          <video id="local-video" autoplay playsinline muted></video>
+        <!-- Local User Video -->
+        <div class="video-box">
           <span class="video-label">You</span>
+          <video id="localVideo" autoplay muted playsinline></video>
         </div>
       </div>
 
-      <!-- Action Controls -->
+      <!-- Action Buttons -->
       <div class="controls">
-        <button id="start-btn" class="btn primary">Start Search</button>
-        <button id="next-btn" class="btn danger" disabled>Skip / Next ⏭️</button>
+        <button class="btn btn-start" id="startBtn">Start</button>
+        <button class="btn btn-next" id="nextBtn">Next (Skip)</button>
+        <button class="btn btn-stop" id="stopBtn">Stop</button>
       </div>
+    </div>
 
-    </section>
-
-    <!-- Right Side: Chat System -->
-    <section class="chat-section">
-      <div class="chat-header">
-        <h3>Live Chat</h3>
+    <!-- Right Section: Chat Panel -->
+    <div class="side-panel">
+      <div class="chat-messages" id="chatMessages">
+        <p class="system-msg">System: Click Start to begin video chat.</p>
       </div>
-      <div id="chat-messages" class="chat-box">
-        <p class="system-msg">Press "Start Search" to find a stranger!</p>
+      <div class="chat-input-area">
+        <input type="text" id="chatInput" placeholder="Type a message..." />
+        <button class="btn btn-next" id="sendBtn" style="padding: 10px 18px;">Send</button>
       </div>
-      <form id="chat-form" class="chat-input-area">
-        <input type="text" id="msg-input" placeholder="Type a message..." disabled required>
-        <button type="submit" id="send-btn" class="btn" disabled>Send</button>
-      </form>
-    </section>
+    </div>
+  </div>
 
-  </main>
-
-  <!-- Custom Script Load (Body ke end mein ek hi baar) -->
   <script src="script.js"></script>
 </body>
 </html>
